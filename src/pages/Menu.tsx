@@ -27,7 +27,7 @@ export default function Menu() {
   return (
     <div className="flex flex-col min-h-full">
       {/* Category Tabs */}
-      <div className="sticky top-[53px] z-40 bg-white/90 dark:bg-charcoal/90 backdrop-blur-md border-b border-gold/10 p-4 flex justify-center transition-colors duration-300">
+      <div className="sticky top-[53px] z-40 bg-white/40 dark:bg-charcoal/40 backdrop-blur-xl border-b border-white/20 dark:border-white/10 p-4 flex justify-center transition-all duration-300">
         <div className="bg-white dark:bg-white/5 p-1.5 rounded-[20px] shadow-lg border border-gold/10 flex w-full max-w-sm relative">
           {categories.map((cat) => (
             <button

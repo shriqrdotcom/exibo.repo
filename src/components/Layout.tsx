@@ -19,20 +19,20 @@ export default function Layout({ children }: { children: ReactNode }) {
     <div ref={constraintsRef} className="min-h-screen flex flex-col max-w-md mx-auto bg-cream dark:bg-charcoal shadow-2xl relative overflow-x-hidden transition-colors duration-300">
       <FlyToCart />
       {/* Header */}
-      <header className="sticky top-0 z-50 h-[53px] bg-white/90 dark:bg-charcoal/90 backdrop-blur-md border-b border-gold/20 px-4 flex items-center justify-between transition-colors duration-300">
+      <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md z-50 h-[53px] bg-white/40 dark:bg-charcoal/40 backdrop-blur-xl border-b border-white/20 dark:border-white/10 px-4 flex items-center justify-between transition-all duration-300">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-saffron rounded-full flex items-center justify-center text-white font-bold italic">E</div>
+          <div className="w-8 h-8 bg-saffron rounded-full flex items-center justify-center text-white font-bold italic shadow-lg shadow-saffron/20">E</div>
           <span className="text-xl font-bold text-charcoal dark:text-cream tracking-tight">Exzibo.com</span>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={toggleTheme}
-            className="p-2 hover:bg-gold/10 rounded-full transition-colors text-charcoal dark:text-cream"
+            className="p-2 hover:bg-white/20 dark:hover:bg-white/5 rounded-full transition-colors text-charcoal dark:text-cream"
             aria-label="Toggle Theme"
           >
             {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
           </button>
-          <NavLink to="/cart" id="header-cart-icon" className="relative p-2 hover:bg-gold/10 rounded-full transition-colors">
+          <NavLink to="/cart" id="header-cart-icon" className="relative p-2 hover:bg-white/20 dark:hover:bg-white/5 rounded-full transition-colors">
             <ShoppingCart className="w-6 h-6 text-charcoal dark:text-cream" />
             {totalItems > 0 && (
               <motion.span
@@ -46,7 +46,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 mandala-pattern pb-24">
+      <main className="flex-1 mandala-pattern pt-[53px] pb-24">
         {children}
       </main>
 
@@ -81,7 +81,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       </AnimatePresence>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white dark:bg-charcoal border-t border-gold/20 px-4 py-3 flex items-center justify-between z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] transition-colors duration-300">
+      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/40 dark:bg-charcoal/40 backdrop-blur-xl border-t border-white/20 dark:border-white/10 px-4 py-3 flex items-center justify-between z-50 shadow-[0_-8px_32px_rgba(0,0,0,0.1)] transition-all duration-300">
         <NavItem to="/" icon={<Home className="w-5 h-5" />} label="Home" />
         <NavItem to="/menu" icon={<Utensils className="w-5 h-5" />} label="Menu" />
         <NavItem to="/cart" icon={<ShoppingCart className="w-5 h-5" />} label="Cart" badge={totalItems} />

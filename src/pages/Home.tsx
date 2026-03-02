@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* ... Hero Section ... */}
-      <section className="relative h-[70vh] flex items-end overflow-hidden">
+      <section className="relative h-[70vh] flex items-end overflow-hidden -mt-[53px]">
         <img
           src="https://picsum.photos/seed/indianfood/800/1200"
           alt="Indian Restaurant"
