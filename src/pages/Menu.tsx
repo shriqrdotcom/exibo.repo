@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MENU_DATA } from '../data/menu';
 import { useCart, MenuItem } from '../context/CartContext';
@@ -17,7 +17,10 @@ export default function Menu() {
   };
 
   const categories = ['Starters', 'Main Course', 'Drinks'] as const;
-  const filteredItems = MENU_DATA.filter(item => item.category === activeCategory);
+  const filteredItems = useMemo(() => 
+    MENU_DATA.filter(item => item.category === activeCategory),
+    [activeCategory]
+  );
 
   // Scroll to top when category changes
   React.useEffect(() => {
@@ -82,16 +85,19 @@ export default function Menu() {
 }
 
 interface MenuCardProps {
-  key?: string | number;
   item: MenuItem;
   cartQuantity: number;
   onAdd: (e: React.MouseEvent) => void;
   onUpdate: (delta: number) => void;
 }
 
-function MenuCard({ item, cartQuantity, onAdd, onUpdate }: MenuCardProps) {
+const MenuCard = memo(({ item, cartQuantity, onAdd, onUpdate }: MenuCardProps) => {
   return (
     <motion.div
+      layout
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
       className="bg-white dark:bg-white/5 rounded-3xl p-4 flex gap-4 shadow-sm border border-gold/5 hover:shadow-md transition-all duration-300"
     >
       {/* Image / Gradient Placeholder */}
@@ -179,4 +185,6 @@ function MenuCard({ item, cartQuantity, onAdd, onUpdate }: MenuCardProps) {
       </div>
     </motion.div>
   );
-}
+});
+
+MenuCard.displayName = 'MenuCard';

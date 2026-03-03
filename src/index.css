@@ -25,6 +25,8 @@
 
   body {
     @apply bg-cream text-charcoal font-sans antialiased transition-colors duration-300;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
   .dark body {

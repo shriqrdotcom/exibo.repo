@@ -43,6 +43,8 @@ type CartContextType = {
   clearCart: () => void;
   placeOrder: (mobileNumber: string) => string | undefined;
   addBooking: (booking: Omit<Booking, 'id' | 'status'>) => void;
+  customerMobile: string;
+  setCustomerMobile: (mobile: string) => void;
   totalItems: number;
   subtotal: number;
   gst: number;
@@ -79,18 +81,45 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   });
   const [discount, setDiscount] = useState(0);
+  const [customerMobile, setCustomerMobile] = useState(() => {
+    try {
+      return localStorage.getItem('exzibo_mobile') || '';
+    } catch (e) {
+      return '';
+    }
+  });
 
   useEffect(() => {
-    localStorage.setItem('exzibo_cart', JSON.stringify(cart));
+    try {
+      localStorage.setItem('exzibo_cart', JSON.stringify(cart));
+    } catch (e) {
+      console.error('Failed to save cart to localStorage', e);
+    }
   }, [cart]);
 
   useEffect(() => {
-    localStorage.setItem('exzibo_orders', JSON.stringify(orders));
+    try {
+      localStorage.setItem('exzibo_orders', JSON.stringify(orders));
+    } catch (e) {
+      console.error('Failed to save orders to localStorage', e);
+    }
   }, [orders]);
 
   useEffect(() => {
-    localStorage.setItem('exzibo_bookings', JSON.stringify(bookings));
+    try {
+      localStorage.setItem('exzibo_bookings', JSON.stringify(bookings));
+    } catch (e) {
+      console.error('Failed to save bookings to localStorage', e);
+    }
   }, [bookings]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('exzibo_mobile', customerMobile);
+    } catch (e) {
+      console.error('Failed to save mobile to localStorage', e);
+    }
+  }, [customerMobile]);
 
   const addToCart = (item: MenuItem) => {
     setCart(prev => {
@@ -173,6 +202,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       clearCart,
       placeOrder,
       addBooking,
+      customerMobile,
+      setCustomerMobile,
       totalItems,
       subtotal,
       gst,

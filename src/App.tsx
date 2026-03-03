@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Layout from './components/Layout';
@@ -10,6 +10,22 @@ import Orders from './pages/Orders';
 import ScrollToTop from './components/ScrollToTop';
 import { AnimatePresence } from 'motion/react';
 
+function AnimatedRoutes() {
+  const location = useLocation();
+  
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location}>
+        <Route path="/" element={<Home />} />
+        <Route path="/menu" element={<Menu />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/reservations" element={<Reservations />} />
+        <Route path="/orders" element={<Orders />} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
 export default function App() {
   return (
     <ThemeProvider>
@@ -17,15 +33,7 @@ export default function App() {
         <Router>
           <ScrollToTop />
           <Layout>
-            <AnimatePresence mode="wait">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/menu" element={<Menu />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/reservations" element={<Reservations />} />
-                <Route path="/orders" element={<Orders />} />
-              </Routes>
-            </AnimatePresence>
+            <AnimatedRoutes />
           </Layout>
         </Router>
       </CartProvider>
