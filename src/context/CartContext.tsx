@@ -41,7 +41,7 @@ type CartContextType = {
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, delta: number) => void;
   clearCart: () => void;
-  placeOrder: (mobileNumber: string) => void;
+  placeOrder: (mobileNumber: string) => string | undefined;
   addBooking: (booking: Omit<Booking, 'id' | 'status'>) => void;
   totalItems: number;
   subtotal: number;
@@ -128,10 +128,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const placeOrder = (mobileNumber: string) => {
-    if (cart.length === 0) return;
+    if (cart.length === 0) return undefined;
     
+    const orderId = `ORD-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
     const newOrder: Order = {
-      id: `ORD-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+      id: orderId,
       items: [...cart],
       total: grandTotal,
       date: new Date().toLocaleString(),
@@ -141,6 +142,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     
     setOrders(prev => [newOrder, ...prev]);
     clearCart();
+    return orderId;
   };
 
   const addBooking = (booking: Omit<Booking, 'id' | 'status'>) => {

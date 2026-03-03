@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCart } from '../context/CartContext';
-import { Trash2, Plus, Minus, Ticket, ArrowRight, ShoppingBag, CheckCircle2, Phone } from 'lucide-react';
+import { Trash2, Plus, Minus, Ticket, ArrowRight, ShoppingBag, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
+import OrderSuccessModal from '../components/OrderSuccessModal';
 
 export default function Cart() {
   const { cart, updateQuantity, removeFromCart, subtotal, gst, discount, grandTotal, applyCoupon, clearCart, placeOrder } = useCart();
   const [couponCode, setCouponCode] = useState('');
   const [couponStatus, setCouponStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isOrdering, setIsOrdering] = useState(false);
-  const [isOrdered, setIsOrdered] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [lastOrderId, setLastOrderId] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [mobileError, setMobileError] = useState('');
 
@@ -36,36 +38,16 @@ export default function Cart() {
     setIsOrdering(true);
     // Simulate API call
     setTimeout(() => {
-      placeOrder(mobileNumber);
+      const orderId = placeOrder(mobileNumber);
       setIsOrdering(false);
-      setIsOrdered(true);
+      if (orderId) {
+        setLastOrderId(orderId);
+        setShowSuccessModal(true);
+      }
     }, 2000);
   };
 
-  if (isOrdered) {
-    return (
-      <div className="flex flex-col items-center justify-center p-8 text-center min-h-[80vh]">
-        <motion.div
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="w-32 h-32 bg-emerald/10 rounded-full flex items-center justify-center mb-8"
-        >
-          <CheckCircle2 className="w-16 h-16 text-emerald" />
-        </motion.div>
-        <h2 className="text-3xl font-bold text-charcoal dark:text-cream mb-4">Order Placed!</h2>
-        <p className="text-charcoal/60 dark:text-cream/60 mb-8 max-w-[250px]">
-          Your delicious meal is being prepared and will be with you shortly.
-        </p>
-        <Link to="/menu">
-          <button className="bg-saffron text-white px-10 py-4 rounded-full font-bold shadow-lg">
-            Order More
-          </button>
-        </Link>
-      </div>
-    );
-  }
-
-  if (cart.length === 0) {
+  if (cart.length === 0 && !showSuccessModal) {
     return (
       <div className="flex flex-col items-center justify-center p-8 text-center min-h-[60vh]">
         <motion.div
@@ -88,6 +70,12 @@ export default function Cart() {
 
   return (
     <div className="p-4 space-y-6">
+      <OrderSuccessModal 
+        isOpen={showSuccessModal} 
+        onClose={() => setShowSuccessModal(false)} 
+        orderId={lastOrderId}
+        mobileNumber={mobileNumber}
+      />
       <h2 className="text-2xl font-bold text-charcoal dark:text-cream px-2">Your Order</h2>
 
       {/* Cart Items */}
