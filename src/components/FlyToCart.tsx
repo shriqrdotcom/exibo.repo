@@ -17,9 +17,11 @@ export default function FlyToCart() {
     setItems((prev) => [...prev, { id, startX: x, startY: y }]);
     
     // Cleanup after animation
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setItems((prev) => prev.filter((item) => item.id !== id));
     }, 1000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {

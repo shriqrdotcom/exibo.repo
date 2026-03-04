@@ -14,6 +14,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const isCartPage = location.pathname === '/cart';
   const constraintsRef = useRef(null);
+  const isDragging = useRef(false);
 
   return (
     <div ref={constraintsRef} className="min-h-screen flex flex-col max-w-md mx-auto bg-cream dark:bg-charcoal shadow-2xl relative overflow-x-hidden transition-colors duration-300">
@@ -22,7 +23,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md z-50 h-[53px] bg-white/40 dark:bg-charcoal/40 backdrop-blur-xl border-b border-white/20 dark:border-white/10 px-4 flex items-center justify-between transition-all duration-300">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-saffron rounded-full flex items-center justify-center text-white font-bold italic shadow-lg shadow-saffron/20">E</div>
-          <span className="text-xl font-bold text-charcoal dark:text-cream tracking-tight">Exzibo.com</span>
+          <span className="text-xl font-bold text-charcoal dark:text-cream tracking-tight">Exzibo.online</span>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -58,14 +59,20 @@ export default function Layout({ children }: { children: ReactNode }) {
             dragConstraints={constraintsRef}
             dragElastic={0.1}
             dragMomentum={false}
+            onDragStart={() => { isDragging.current = true; }}
+            onDragEnd={() => { 
+              // Small delay to ensure click event doesn't fire immediately after drag
+              setTimeout(() => { isDragging.current = false; }, 100); 
+            }}
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             className="fixed bottom-24 right-6 z-50 cursor-grab active:cursor-grabbing"
           >
             <Link to="/cart" onClick={(e) => {
-              // Prevent navigation if dragging occurred
-              // This is a simple way to handle drag vs click
+              if (isDragging.current) {
+                e.preventDefault();
+              }
             }}>
               <div className="w-14 h-14 bg-saffron text-white rounded-full flex items-center justify-center shadow-[0_8px_25px_rgba(255,37,37,0.4)] hover:bg-red-600 transition-colors relative">
                 <ShoppingCart className="w-6 h-6" />

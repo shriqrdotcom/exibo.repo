@@ -12,6 +12,7 @@ export default function Menu() {
   const { cart, addToCart, updateQuantity } = useCart();
 
   const handleAdd = (e: React.MouseEvent, item: MenuItem) => {
+    if (!item) return;
     addToCart(item);
     triggerFlyToCart(e.clientX, e.clientY);
   };

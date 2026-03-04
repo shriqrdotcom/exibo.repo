@@ -17,10 +17,10 @@ type ReservationData = {
 };
 
 export default function Reservations() {
-  const { addBooking } = useCart();
+  const { addBooking, customerMobile } = useCart();
   const [formData, setFormData] = useState<ReservationData>({
     name: '',
-    phone: '',
+    phone: customerMobile || '',
     email: '',
     date: '',
     time: '7:00 PM',

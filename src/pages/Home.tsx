@@ -13,6 +13,7 @@ export default function Home() {
   const specials = MENU_DATA.filter(item => item.isSpecial);
 
   const handleAddToCart = (e: React.MouseEvent, item: any) => {
+    if (!item) return;
     addToCart(item);
     triggerFlyToCart(e.clientX, e.clientY);
   };
@@ -36,7 +37,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-5xl font-bold text-gold mb-2 leading-tight">
-              Exzibo.com
+              Exzibo.online
             </h1>
             <p className="text-cream/90 text-lg font-light italic mb-6">
               Authentic Indian Flavors, Reimagined
@@ -171,7 +172,7 @@ export default function Home() {
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="flex items-center gap-2">
               <Utensils className="w-6 h-6 text-saffron" />
-              <h2 className="text-2xl font-serif font-bold tracking-tight">Exzibo.com</h2>
+              <h2 className="text-2xl font-serif font-bold tracking-tight">Exzibo.online</h2>
             </div>
             <p className="text-xs text-charcoal/50 dark:text-cream/50 max-w-[250px]">
               Authentic Indian Flavors, Reimagined for the modern palate.
@@ -203,7 +204,7 @@ export default function Home() {
               <div className="w-8 h-8 rounded-full bg-saffron/10 flex items-center justify-center shrink-0">
                 <Mail className="w-4 h-4 text-saffron" />
               </div>
-              <span>hello@exzibo.com</span>
+              <span>hello@exzibo.online</span>
             </div>
           </div>
 
