@@ -22,22 +22,38 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   containerClassName,
   fallbackSrc,
   category,
+  initial,
+  animate,
+  transition,
   ...props
 }) => {
   const finalFallback = fallbackSrc || (category ? FALLBACKS[category] : FALLBACKS.default) || FALLBACKS.default;
   const [isLoading, setIsLoading] = React.useState(true);
   const [currentSrc, setCurrentSrc] = React.useState(src || finalFallback);
+  const imgRef = React.useRef<HTMLImageElement>(null);
 
+  // Handle source changes
   React.useEffect(() => {
-    setCurrentSrc(src || finalFallback);
-    setIsLoading(true);
-  }, [src, finalFallback]);
+    const newSrc = src || finalFallback;
+    if (newSrc !== currentSrc) {
+      setCurrentSrc(newSrc);
+      setIsLoading(true);
+    }
+  }, [src, finalFallback, currentSrc]);
+
+  // Immediate check for cached images
+  React.useEffect(() => {
+    if (imgRef.current?.complete) {
+      setIsLoading(false);
+    }
+  }, [currentSrc]);
 
   const handleError = () => {
     // If the primary image fails and we're not already showing the fallback, switch to fallback
     if (currentSrc !== finalFallback) {
       console.warn(`Image failed to load: ${currentSrc}. Switching to fallback.`);
       setCurrentSrc(finalFallback);
+      setIsLoading(true); // Reset loading for the fallback
     } else {
       // If the fallback also fails, or we started with the fallback and it failed, stop loading
       console.error(`Fallback image failed to load: ${currentSrc}`);
@@ -57,11 +73,21 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
         </div>
       )}
       <motion.img
+        ref={imgRef}
+        key={currentSrc}
         src={currentSrc}
         alt={alt}
+        initial={{ opacity: 0, ...(initial as any) }}
+        animate={{ 
+          opacity: isLoading ? 0 : 1, 
+          ...(animate as any) 
+        }}
+        transition={{ 
+          opacity: { duration: 0.3 },
+          ...(transition as any)
+        }}
         className={cn(
-          "transition-opacity duration-300",
-          isLoading ? "opacity-0" : "opacity-100",
+          "object-cover",
           className
         )}
         onLoad={handleLoad}
