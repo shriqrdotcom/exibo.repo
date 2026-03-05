@@ -1,20 +1,29 @@
 import React, { useState, useMemo, memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { MENU_DATA } from '../data/menu';
 import { useCart, MenuItem } from '../context/CartContext';
 import { Plus, Minus, ShoppingBag, Flame } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 import { triggerFlyToCart } from '../components/FlyToCart';
 
 export default function Menu() {
   const [activeCategory, setActiveCategory] = useState<'Starters' | 'Main Course' | 'Drinks'>('Starters');
+  const navigate = useNavigate();
   const { cart, addToCart, updateQuantity } = useCart();
 
   const handleAdd = (e: React.MouseEvent, item: MenuItem) => {
+    e.stopPropagation(); // Prevent navigation when clicking Add
     if (!item) return;
     addToCart(item);
     triggerFlyToCart(e.clientX, e.clientY);
+  };
+
+  const handleUpdate = (e: React.MouseEvent, id: string, delta: number) => {
+    e.stopPropagation(); // Prevent navigation when clicking +/-
+    updateQuantity(id, delta);
   };
 
   const categories = ['Starters', 'Main Course', 'Drinks'] as const;
@@ -74,7 +83,8 @@ export default function Menu() {
                   item={item}
                   cartQuantity={qty}
                   onAdd={(e) => handleAdd(e, item)}
-                  onUpdate={(delta) => updateQuantity(item.id, delta)}
+                  onUpdate={(e, delta) => handleUpdate(e, item.id, delta)}
+                  onClick={() => navigate(`/menu/${item.id}`, { state: item })}
                 />
               );
             })}
@@ -89,31 +99,31 @@ interface MenuCardProps {
   item: MenuItem;
   cartQuantity: number;
   onAdd: (e: React.MouseEvent) => void;
-  onUpdate: (delta: number) => void;
+  onUpdate: (e: React.MouseEvent, delta: number) => void;
+  onClick: () => void;
 }
 
-const MenuCard = memo(({ item, cartQuantity, onAdd, onUpdate }: MenuCardProps) => {
+const MenuCard = memo(({ item, cartQuantity, onAdd, onUpdate, onClick }: MenuCardProps) => {
   return (
     <motion.div
       layout
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="bg-white dark:bg-white/5 rounded-3xl p-4 flex gap-4 shadow-sm border border-gold/5 hover:shadow-md transition-all duration-300"
+      onClick={onClick}
+      className="bg-white dark:bg-white/5 rounded-3xl p-4 flex gap-4 shadow-sm border border-gold/5 hover:shadow-md transition-all duration-300 cursor-pointer"
     >
       {/* Image / Gradient Placeholder */}
-      <div className={cn(
-        "w-32 h-24 rounded-xl overflow-hidden relative flex-shrink-0 bg-cream dark:bg-charcoal/50 shadow-inner",
-        item.category === 'Starters' ? "bg-red-50 dark:bg-red-900/10" : 
-        item.category === 'Main Course' ? "bg-red-50 dark:bg-red-900/10" : "bg-blue-50 dark:bg-blue-900/10"
-      )}>
-        <img
+      <div className="w-32 h-24 rounded-xl overflow-hidden relative flex-shrink-0 shadow-inner">
+        <OptimizedImage
           src={item.image}
           alt={item.name}
+          category={item.category}
+          fallbackSrc={item.fallbackImage}
           className="w-full h-full object-cover opacity-90 transition-transform hover:scale-110 duration-500"
-          referrerPolicy="no-referrer"
+          containerClassName="w-full h-full"
         />
-        <div className="absolute top-2 left-2">
+        <div className="absolute top-2 left-2 z-10">
           <div className={cn(
             "w-3 h-3 rounded-full border-2 border-white shadow-sm",
             item.isVeg ? "bg-emerald" : "bg-red-600"
@@ -166,13 +176,13 @@ const MenuCard = memo(({ item, cartQuantity, onAdd, onUpdate }: MenuCardProps) =
                 exit={{ opacity: 0, scale: 0.9 }}
                 className="flex items-center gap-3 bg-gold/10 dark:bg-gold/20 rounded-full px-2 py-1 border border-gold/20"
               >
-                <button onClick={() => onUpdate(-1)} className="p-1 text-saffron hover:bg-white dark:hover:bg-charcoal rounded-full transition-colors">
+                <button onClick={(e) => onUpdate(e, -1)} className="p-1 text-saffron hover:bg-white dark:hover:bg-charcoal rounded-full transition-colors">
                   <Minus className="w-3 h-3" />
                 </button>
                 <span className="text-xs font-bold text-charcoal dark:text-cream min-w-[12px] text-center">{cartQuantity}</span>
                 <button 
                   onClick={(e) => {
-                    onUpdate(1);
+                    onUpdate(e, 1);
                     triggerFlyToCart(e.clientX, e.clientY);
                   }} 
                   className="p-1 text-saffron hover:bg-white dark:hover:bg-charcoal rounded-full transition-colors"

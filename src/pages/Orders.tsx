@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useCart } from '../context/CartContext';
 import { ShoppingBag, Calendar, ChevronRight, Package, Clock, CheckCircle2, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 export default function Orders() {
   const { orders, bookings } = useCart();
@@ -65,14 +66,21 @@ export default function Orders() {
                     
                     <div className="flex items-center gap-3 text-xs text-charcoal/60 dark:text-cream/60">
                       <Clock className="w-3 h-3" />
-                      {order.date}
+                      {new Date(order.date).toLocaleString()}
                     </div>
 
                     <div className="border-t border-gold/5 pt-4">
                       <div className="flex justify-between items-center">
                         <div className="flex -space-x-2">
                           {order.items.slice(0, 3).map((item, i) => (
-                            <img key={i} src={item.image} alt="" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
+                            <OptimizedImage 
+                              key={i} 
+                              src={item.image} 
+                              alt="" 
+                              category={item.category}
+                              className="w-8 h-8 rounded-full border-2 border-white object-cover" 
+                              containerClassName="w-8 h-8 rounded-full border-2 border-white"
+                            />
                           ))}
                           {order.items.length > 3 && (
                             <div className="w-8 h-8 rounded-full border-2 border-white bg-cream flex items-center justify-center text-[10px] font-bold text-charcoal/40">

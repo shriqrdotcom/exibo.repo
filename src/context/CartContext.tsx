@@ -9,6 +9,7 @@ export type MenuItem = {
   isVeg: boolean;
   spiceLevel: 0 | 1 | 2 | 3;
   image: string;
+  fallbackImage?: string;
   isSpecial?: boolean;
 };
 
@@ -164,7 +165,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       id: orderId,
       items: [...cart],
       total: grandTotal,
-      date: new Date().toLocaleString(),
+      date: new Date().toISOString(),
       status: 'Preparing',
       mobileNumber: mobileNumber
     };

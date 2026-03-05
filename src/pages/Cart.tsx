@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { Trash2, Plus, Minus, Ticket, ArrowRight, ShoppingBag, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
+import { OptimizedImage } from '../components/OptimizedImage';
 import OrderSuccessModal from '../components/OrderSuccessModal';
 
 export default function Cart() {
@@ -43,7 +44,7 @@ export default function Cart() {
 
     setIsOrdering(true);
     // Simulate API call
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       if (!isMounted.current) return;
       
       const orderId = placeOrder(customerMobile);
@@ -53,6 +54,8 @@ export default function Cart() {
         setShowSuccessModal(true);
       }
     }, 2000);
+
+    return () => clearTimeout(timer);
   };
 
   if (cart.length === 0 && !showSuccessModal) {
@@ -96,11 +99,12 @@ export default function Cart() {
             animate={{ opacity: 1, y: 0 }}
             className="bg-white dark:bg-white/5 rounded-3xl p-4 flex gap-4 shadow-sm border border-gold/5"
           >
-            <img
+            <OptimizedImage
               src={item.image}
               alt={item.name}
+              category={item.category}
               className="w-20 h-20 rounded-xl object-cover"
-              referrerPolicy="no-referrer"
+              containerClassName="w-20 h-20 rounded-xl"
             />
             <div className="flex-1 flex flex-col justify-between">
               <div className="flex justify-between items-start">

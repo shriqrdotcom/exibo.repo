@@ -1,18 +1,21 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { useNavigate, Link } from 'react-router-dom';
 import { ChevronDown, ArrowRight, Star, Clock, MapPin, Plus, Instagram, Facebook, Twitter, Phone, Utensils, Mail } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { MENU_DATA } from '../data/menu';
 import { useCart } from '../context/CartContext';
 import { cn } from '../lib/utils';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 import { triggerFlyToCart } from '../components/FlyToCart';
 
 export default function Home() {
+  const navigate = useNavigate();
   const { addToCart } = useCart();
   const specials = MENU_DATA.filter(item => item.isSpecial);
 
   const handleAddToCart = (e: React.MouseEvent, item: any) => {
+    e.stopPropagation();
     if (!item) return;
     addToCart(item);
     triggerFlyToCart(e.clientX, e.clientY);
@@ -22,11 +25,11 @@ export default function Home() {
     <div className="flex flex-col">
       {/* ... Hero Section ... */}
       <section className="relative h-[70vh] flex items-end overflow-hidden -mt-[53px]">
-        <img
-          src="https://picsum.photos/seed/indianfood/800/1200"
+        <OptimizedImage
+          src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80"
           alt="Indian Restaurant"
           className="absolute inset-0 w-full h-full object-cover"
-          referrerPolicy="no-referrer"
+          containerClassName="absolute inset-0 w-full h-full"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/40 to-transparent" />
         
@@ -126,14 +129,16 @@ export default function Home() {
             <motion.div
               key={item.id}
               whileHover={{ y: -5 }}
-              className="min-w-[280px] bg-white dark:bg-white/5 rounded-[32px] overflow-hidden shadow-md border border-gold/10 flex flex-col"
+              onClick={() => navigate(`/menu/${item.id}`)}
+              className="min-w-[280px] bg-white dark:bg-white/5 rounded-[32px] overflow-hidden shadow-md border border-gold/10 flex flex-col cursor-pointer"
             >
               <div className="p-2">
-                <img
+                <OptimizedImage
                   src={item.image}
                   alt={item.name}
+                  category={item.category}
                   className="w-full h-40 object-cover rounded-xl"
-                  referrerPolicy="no-referrer"
+                  containerClassName="w-full h-40 rounded-xl"
                 />
               </div>
               <div className="p-4 pt-0 flex-1 flex flex-col">
