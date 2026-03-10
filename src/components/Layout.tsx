@@ -92,7 +92,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <NavItem to="/" icon={<Home className="w-5 h-5" />} label="Home" />
         <NavItem to="/menu" icon={<Utensils className="w-5 h-5" />} label="Menu" />
         <NavItem to="/cart" icon={<ShoppingCart className="w-5 h-5" />} label="Cart" badge={totalItems} />
-        <NavItem to="/orders" icon={<Package className="w-5 h-5" />} label="Orders" />
+        <NavItem to="/place-order" icon={<Package className="w-5 h-5" />} label="Order" />
         <NavItem to="/reservations" icon={<Calendar className="w-5 h-5" />} label="Book" />
       </nav>
     </div>

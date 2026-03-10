@@ -8,6 +8,7 @@ import FoodDetail from './pages/FoodDetail';
 import Cart from './pages/Cart';
 import Reservations from './pages/Reservations';
 import Orders from './pages/Orders';
+import PlaceOrder from './pages/PlaceOrder';
 import ScrollToTop from './components/ScrollToTop';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AnimatePresence } from 'motion/react';
@@ -24,6 +25,7 @@ function AnimatedRoutes() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/reservations" element={<Reservations />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/place-order" element={<PlaceOrder />} />
       </Routes>
     </AnimatePresence>
   );
