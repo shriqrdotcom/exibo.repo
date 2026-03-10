@@ -88,6 +88,7 @@ export default function FoodDetail() {
           fallbackSrc={item.fallbackImage}
           className="w-full h-full object-cover"
           containerClassName="w-full h-full"
+          loading="eager"
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.8 }}

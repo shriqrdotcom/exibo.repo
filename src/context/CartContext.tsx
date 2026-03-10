@@ -42,10 +42,12 @@ type CartContextType = {
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, delta: number) => void;
   clearCart: () => void;
-  placeOrder: (mobileNumber: string) => string | undefined;
+  placeOrder: (name: string, mobileNumber: string) => string | undefined;
   addBooking: (booking: Omit<Booking, 'id' | 'status'>) => void;
   customerMobile: string;
   setCustomerMobile: (mobile: string) => void;
+  customerName: string;
+  setCustomerName: (name: string) => void;
   totalItems: number;
   subtotal: number;
   gst: number;
@@ -89,6 +91,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return '';
     }
   });
+  const [customerName, setCustomerName] = useState(() => {
+    try {
+      return localStorage.getItem('exzibo_name') || '';
+    } catch (e) {
+      return '';
+    }
+  });
 
   useEffect(() => {
     try {
@@ -121,6 +130,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
       console.error('Failed to save mobile to localStorage', e);
     }
   }, [customerMobile]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('exzibo_name', customerName);
+    } catch (e) {
+      console.error('Failed to save name to localStorage', e);
+    }
+  }, [customerName]);
 
   const addToCart = (item: MenuItem) => {
     setCart(prev => {
@@ -157,7 +174,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const grandTotal = subtotal + gst - discountAmount;
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  const placeOrder = (mobileNumber: string) => {
+  const placeOrder = (name: string, mobileNumber: string) => {
     if (cart.length === 0) return undefined;
     
     const orderId = `ORD-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
@@ -205,6 +222,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       addBooking,
       customerMobile,
       setCustomerMobile,
+      customerName,
+      setCustomerName,
       totalItems,
       subtotal,
       gst,

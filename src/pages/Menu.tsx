@@ -122,6 +122,7 @@ const MenuCard = memo(({ item, cartQuantity, onAdd, onUpdate, onClick }: MenuCar
           fallbackSrc={item.fallbackImage}
           className="w-full h-full object-cover opacity-90 transition-transform hover:scale-110 duration-500"
           containerClassName="w-full h-full"
+          loading="lazy"
         />
         <div className="absolute top-2 left-2 z-10">
           <div className={cn(

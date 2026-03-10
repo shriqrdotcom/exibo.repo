@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, Users, Clock, Star, CheckCircle2, CalendarPlus, ChevronRight } from 'lucide-react';
+import { Calendar, Users, Clock, Star, CheckCircle2, CalendarPlus, ChevronRight, Loader2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { cn } from '../lib/utils';
+import { supabase } from '../lib/supabase';
 
 type ReservationData = {
   name: string;
@@ -32,19 +33,48 @@ export default function Reservations() {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [bookingId, setBookingId] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const id = Math.floor(100000 + Math.random() * 900000).toString();
-    setBookingId(id);
-    
-    addBooking({
-      date: formData.date,
-      time: formData.time,
-      guests: formData.guests
-    });
-    
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+
+    try {
+      // Attempt to send reservation data to Supabase, but don't let it block the local booking
+      try {
+        const { error: supabaseError } = await supabase.from("reservations").insert([
+          {
+            name: formData.name,
+            phone: formData.phone,
+            guests: formData.guests,
+            date: formData.date,
+            time: formData.time,
+            notes: formData.requests
+          }
+        ]);
+        if (supabaseError) {
+          console.warn('Supabase reservation sync failed:', supabaseError);
+        }
+      } catch (err) {
+        console.warn('Supabase connection error:', err);
+      }
+
+      const id = Math.floor(100000 + Math.random() * 900000).toString();
+      setBookingId(id);
+      
+      addBooking({
+        date: formData.date,
+        time: formData.time,
+        guests: formData.guests
+      });
+      
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Reservation failed:', error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSubmitted) {
@@ -250,9 +280,14 @@ export default function Reservations() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
-          className="w-full bg-gradient-to-r from-saffron to-gold text-white py-5 rounded-3xl font-bold text-lg shadow-xl flex items-center justify-center gap-2"
+          disabled={isSubmitting}
+          className="w-full bg-gradient-to-r from-saffron to-gold text-white py-5 rounded-3xl font-bold text-lg shadow-xl flex items-center justify-center gap-2 disabled:opacity-50"
         >
-          Reserve My Table <ChevronRight className="w-5 h-5" />
+          {isSubmitting ? (
+            <Loader2 className="w-6 h-6 animate-spin" />
+          ) : (
+            <>Reserve My Table <ChevronRight className="w-5 h-5" /></>
+          )}
         </motion.button>
       </form>
     </div>
