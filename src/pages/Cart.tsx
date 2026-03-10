@@ -64,10 +64,10 @@ export default function Cart() {
           }
         ]);
         if (supabaseError) {
-          console.warn('Supabase sync failed:', supabaseError);
+          console.error('Supabase sync failed:', supabaseError.message, supabaseError.details, supabaseError.hint);
         }
       } catch (err) {
-        console.warn('Supabase connection error:', err);
+        console.error('Supabase connection error:', err);
       }
 
       // Capture order details before clearing cart

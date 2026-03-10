@@ -53,10 +53,10 @@ export default function Reservations() {
           }
         ]);
         if (supabaseError) {
-          console.warn('Supabase reservation sync failed:', supabaseError);
+          console.error('Supabase reservation sync failed:', supabaseError.message, supabaseError.details, supabaseError.hint);
         }
       } catch (err) {
-        console.warn('Supabase connection error:', err);
+        console.error('Supabase connection error:', err);
       }
 
       const id = Math.floor(100000 + Math.random() * 900000).toString();
